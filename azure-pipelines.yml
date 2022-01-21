@@ -7,11 +7,14 @@ trigger:
 - master
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'windows-2019'
+  demands:
+  - msbuild
+  - visualstudio
 
 variables:
   solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
+  buildPlatform: 'x64'
   buildConfiguration: 'Release'
 
 steps:
@@ -23,8 +26,17 @@ steps:
 
 - task: VSBuild@1
   inputs:
+    solution: '**\*.sln'
+    vsVersion: '16.0'
+    platform: 'x64'
+    configuration: 'Debug'
+    msbuildArchitecture: 'x64'
+
+- task: VSBuild@1
+  inputs:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
+    msbuildArchitecture: 'x64'
     configuration: '$(buildConfiguration)'
 
 - task: VSTest@2
